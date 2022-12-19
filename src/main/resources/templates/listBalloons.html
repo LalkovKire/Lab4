@@ -1,0 +1,82 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>Balloon Order page - Welcome and choose a Balloon </title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <style>
+        body {
+            width: 800px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Welcome to our Balloon Shop App</h1>
+</header>
+<h2>Listing all the predefined balloons:</h2><br>
+<div class="container mb-4">
+    <div class="row">
+        <div class="col-12" th:if="${prebaraj.size() > 0}">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">Balloon name</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Manufacturer</th>
+                        <th scope="col">Country</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="product : ${prebaraj}" class="balloon1">
+                        <td th:text="${product.getName()}"></td>
+                        <td th:text="${product.getDescription()}"></td>
+                        <td th:text="${product.getManufacturer() != null}
+                            ? ${product.getManufacturer().getName()} : 'No Manufacturer'"></td>
+                        <td th:text="${product.getManufacturer() != null}
+                            ? ${product.getManufacturer().getCountry()} : 'No Country'"></td>
+                        <td class="text-right">
+                            <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                            <form th:action="@{'/balloons/delete/{id}' (id=${product.getId()})}" th:method="DELETE">
+                                <button type="submit" class="btn btn-sm btn-danger delete-product"><i class="fa fa-trash">Delete</i></button>
+                            </form>
+                            </th:block>
+                            <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                            <a th:href="@{'/balloons/edit-form/{id}' (id=${product.getId()})}" class="btn btn-sm btn-info edit-product"><i class="fa fa-trash">Edit</i></a>
+                            </th:block>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col mb-3">
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+                    <th:block sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a href="/balloons/add-form" class="btn btn-block btn-dark add-product-btn">Add new balloon</a>
+                        </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<main>
+    <form th:method="POST" action="/balloons">
+    <h2>Choose balloon color:</h2>
+    <input type="radio" name="color" value="Red Balloon"> Red Balloon<br/>
+    <input type="radio" name="color" value="Green Balloon"> Green Balloon<br/>
+    <input type="radio" name="color" value="Yellow Balloon"> Yellow Balloon<br/>
+    <input type="radio" name="color" value="Blue Balloon"> Blue Balloon<br/>
+    <br/>
+        <input type="submit" value="Submit">
+    </form>
+    <a href="/logout">Logout</a>
+</main>
+</body>
+</html>
